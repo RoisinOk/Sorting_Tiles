@@ -1,0 +1,65 @@
+html {
+    font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
+}
+
+body {
+    background: #3A3A4D;
+    padding: 25px;
+}
+
+h1 {
+    color: #efefef;
+    font-weight: normal;
+    font-weight: 300;
+    margin-bottom: 30px;
+}
+h1 a {
+    color: plum;
+    text-decoration: none;
+    padding-bottom: 3px;
+}
+h1 a:hover {
+    color: deepskyblue;
+    border-color: yellowgreen;
+}
+
+
+.#list1 {
+    background-color:#242437;
+    width: 250px;
+    height:1000px;
+    width: 90%;
+    width: 0;
+    position: relative;
+    display: block;
+    margin-top: 50px;
+    color: ghostwhite;
+
+}
+
+.tile {
+    display: block;
+    position: absolute;
+    background-color: plum;
+    color: #3A3A4D;
+    padding: 5px;
+    font-weight: bold;
+    width:200;
+    height:100;
+}
+
+.layout {
+    color: #efefef;
+    margin-bottom: 15px;
+}
+.layout label {
+    margin-right: 15px;
+    cursor: pointer;
+}
+.layout label:hover {
+    color: yellowgreen;
+}
+.layout input {
+    margin-right: 3px;
+}
+
