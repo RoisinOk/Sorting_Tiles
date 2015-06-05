@@ -24,6 +24,28 @@ function addTile(){
     //This declares a new div element with a class of tile, and gives it a HTML label of a number.
     //Then the new element is appended to the list div.
     var element = $("<div></div>").addClass("tile").html(label++);
+
+    // NOTE: Leave rowspan set to 1 because this demo
+    // doesn't calculate different row heights
+    var tile = {
+        col        : null,
+        element    : element,
+        height     : 0,
+        inBounds   : true,
+        index      : null,
+        isDragging : false,
+        lastIndex  : null,
+        newTile    : true,
+        positioned : false,
+        row        : null,
+        rowspan    : 1,
+        width      : 0,
+        x          : 0,
+        y          : 0
+    };
+
+    // Add tile properties to our element for quick lookup
+    element[0].tile = tile;
     $list.append(element);
 
     //This makes the new tile draggable
@@ -58,6 +80,7 @@ function addTile(){
             scale     : 0.95,
         });
     }//end of onPress Function
+
 
 }//End of function to add a tile
 

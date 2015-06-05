@@ -67,17 +67,6 @@ function init() {
 }
 
 
-// ========================================================================
-//  RESIZE
-// ========================================================================
-function resize() {
-
-    colCount   = oneColumn ? 1 : Math.floor($list.outerWidth() / (colSize + gutter));
-    gutterStep = colCount == 1 ? gutter : (gutter * (colCount - 1) / colCount);
-    rowCount   = 0;
-
-    layoutInvalidated();
-}
 
 // ========================================================================
 //  RESIZE
