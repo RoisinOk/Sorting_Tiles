@@ -14,39 +14,44 @@ h1 {
     margin-bottom: 30px;
 }
 h1 a {
-    color: plum;
+    color: darkcyan;
     text-decoration: none;
     padding-bottom: 3px;
 }
 h1 a:hover {
     color: deepskyblue;
-    border-color: yellowgreen;
 }
 
 
-.#list1 {
+.list {
     background-color:#242437;
-    width: 250px;
-    height:1000px;
-    width: 90%;
-    width: 0;
+    width: 200px;
+    height:500px;
     position: relative;
     display: block;
+    margin-right: 20px;
+    margin-left: 20px;
     margin-top: 50px;
     color: ghostwhite;
+    padding: 0px;
 
 }
 
 .tile {
+    color: #efefef;
+    font-weight: normal;
+    font-weight: 300;
+    font-size: large;
     display: block;
     position: absolute;
-    background-color: plum;
-    color: #3A3A4D;
-    padding: 5px;
-    font-weight: bold;
-    width:200;
-    height:100;
+    background-color: #9B2B50;
+    width:200px;
+    height:80px;
+
+    text-align: center;
+    line-height: 80px;
 }
+
 
 .layout {
     color: #efefef;
@@ -63,3 +68,24 @@ h1 a:hover {
     margin-right: 3px;
 }
 
+.button{
+    display: block;
+    position: absolute;
+    background-color: #3A3A4D;
+    color: darkgray;
+    width:200px;
+    height:40px;
+    margin-right: 20px;
+    margin-left: 20px;
+    border-style: solid;
+    border-color: darkcyan;
+    font-size: 1em;
+    text-align: center;
+    line-height: 32px;
+}
+
+
+.button:hover {
+    background-color: darkcyan;
+    color:whitesmoke;
+}
