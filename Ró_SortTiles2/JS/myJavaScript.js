@@ -17,26 +17,8 @@ var label = 1;
 //The z-index property specifies the stack order of an element. Bigger numbers are closer.
 var zIndex = 1000;
 
-//These variables refer to the grid:
-var gridRows = 6;
-var listColumns =1;
-var tileWidth = 200;//width of tile equal to width of column
-var tileHeight = 80;
-var gutterStep = null; // Spacing between tiles
-
 
 var tiles  = $list[0].getElementsByClassName("tile");//the list of tiles
-
-//=====================================================================================
-//CREATE THE GRID
-//=====================================================================================
-
-//loop through and create the grid (a div for each cell). Feel free to tweak the variables above
-for (var i = 0; i < gridRows * listColumns; i++) {
-    y = Math.floor(i / listColumns) * tileHeight;
-    x = (i * tileWidth) % (listColumns * tileWidth);
-    $("<div/>").css({position:"absolute", border:"1px solid #454545", width:tileWidth-1, height:tileHeight-1, top:y, left:x}).prependTo($list);
-}
 
 
 

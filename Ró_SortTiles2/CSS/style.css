@@ -44,7 +44,7 @@ h3 a:hover {
     font-weight: 300;
     font-size: large;
     display: block;
-    position: absolute;
+    position: relative;
     background-color: #9B2B50;
     width:200px;
     height:80px;
