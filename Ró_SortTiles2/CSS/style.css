@@ -34,6 +34,7 @@ h3 a:hover {
     margin-top: 5px;
     color: ghostwhite;
     padding: 0px;
+    z-index: 0px;
 
 }
 
@@ -47,7 +48,7 @@ h3 a:hover {
     background-color: #9B2B50;
     width:200px;
     height:80px;
-
+    margin-bottom: 7px;
     text-align: center;
     line-height: 80px;
 }
@@ -70,7 +71,7 @@ h3 a:hover {
 
 .button{
     display: block;
-    position: absolute;
+    position: static;
     background-color: #3A3A4D;
     color: darkgray;
     width:200px;
