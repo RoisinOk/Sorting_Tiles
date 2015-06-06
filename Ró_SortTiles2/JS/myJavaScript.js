@@ -18,8 +18,10 @@ var label = 1;
 var zIndex = 1000;
 
 
+
 var tiles  = $list[0].getElementsByClassName("tile");//the list of tiles
 
+createSortable("#list2");
 
 
 //=====================================================================================
@@ -32,11 +34,23 @@ function addTile(){
     //Then the new element is appended to the list div.
     var element = $("<li></li>").addClass("tile").html(label++);
 
-    // NOTE: Leave rowspan set to 1 because this demo
-    // doesn't calculate different row heights
+
+    //This makes the new tile draggable
+    //When zIndexBoost is set to true, the z-index automatically increase by one when it is pressed.
+    // This keeps the stacking order correct (newly placed objects are on top)
+    //In the example this is set to false, and then the zindex is increased in the onRelease and onPress functions.
+    //I don't know why, but it might be clear later.
+    Draggable.create(element, {
+        //Functions are called for when the tile is pressed, for when it is released
+        onPress     : onPress,
+        onRelease   : onRelease,
+        zIndexBoost : false,
+    });//end of create draggable
+
+    // NOTE: Leave rowspan set to 1 because this demo doesn't calculate different row heights
     var tile = {
         col        : null,
-        colpan     : 1,
+        colspan     : 1,
         element    : element,
         height     : 0,
         inBounds   : true,
@@ -56,35 +70,12 @@ function addTile(){
     element[0].tile = tile;
     $list.append(element);
 
-    //This makes the new tile draggable
-    //When zIndexBoost is set to true, the z-index automatically increase by one when it is pressed.
-    // This keeps the stacking order correct (newly placed objects are on top)
-    //In the example this is set to false, and then the zindex is increased in the onRelease and onPress functions.
-    //I don't know why, but it might be clear later.
-    Draggable.create(element, {
-        type: "x,y",
-        zIndexBoost : false,
-        //Functions are called for when the tile is pressed, for when it is released.
-        onPress     : onPress,
-        onRelease   : onRelease,
-        //onDrag      : onDrag,
-    });//end of create draggable
-
-
-
-    function onRelease() {
-        //This TweenMax restores the tile to it's usual size and normal shadow
-        TweenMax.to(element, 0.2, {
-            autoAlpha : 1,
-            boxShadow : shadow1,
-            scale     : 1,
-            zIndex    : ++zIndex
-        });
-    }//end of onRelease Function
-
-
 
     function onPress() {
+
+        lastX = this.x;
+        tile.isDragging = true;
+        tile.lastIndex  = tile.index;
         //This TweenMax gives the dragTile its shadow and change in size
         //The z-index makes sure that the tile that is pressed is on top of the other tiles
         TweenMax.to(element, 0.2, {
@@ -95,5 +86,86 @@ function addTile(){
         });
     }//end of onPress Function
 
+
+    function onRelease() {
+        //This TweenMax restores the tile to it's usual size and normal shadow
+        TweenMax.to(element, 0.2, {
+            autoAlpha : 1,
+            boxShadow : shadow1,
+            scale     : 1,
+            zIndex    : ++zIndex
+        });
+
+    }//end of onRelease Function
+
 }//End of function to add a tile
 
+//=====================================================================================
+//CREATE A SORTABLE (http://codepen.io/jamiejefferson/pen/iFDow/?editors=101)
+//=====================================================================================
+
+function createSortable(selector) {
+    var sortable = document.querySelector(selector);
+    Draggable.create(sortable.children, {
+        type: "y",
+        bounds: sortable,
+        edgeResistance: 1,
+        onPress: sortablePress,
+        onDragStart: sortableDragStart,
+        onDrag: sortableDrag,
+        liveSnap: sortableSnap,
+        onDragEnd: sortableDragEnd
+    });
+}
+
+function sortablePress() {
+    var t = this.target,
+        i = 0,
+        child = t;
+    while(child = child.previousSibling)
+        if (child.nodeType === 1) i++;
+    t.currentIndex = i;
+    t.currentHeight = t.offsetHeight;
+    t.kids = [].slice.call(t.parentNode.children); // convert to array
+}
+
+function sortableDragStart() {
+    TweenLite.set(this.target, { color: "#88CE02" });
+}
+
+function sortableDrag() {
+    var t = this.target,
+        elements = t.kids.slice(), // clone
+        indexChange = Math.round(this.y / t.currentHeight),
+        bound1 = t.currentIndex,
+        bound2 = bound1 + indexChange;
+    if (bound1 < bound2) { // moved down
+        TweenLite.to(elements.splice(bound1+1, bound2-bound1), 0.15, { yPercent: -100 });
+        TweenLite.to(elements, 0.15, { yPercent: 0 });
+    } else if (bound1 === bound2) {
+        elements.splice(bound1, 1);
+        TweenLite.to(elements, 0.15, { yPercent: 0 });
+    } else { // moved up
+        TweenLite.to(elements.splice(bound2, bound1-bound2), 0.15, { yPercent: 100 });
+        TweenLite.to(elements, 0.15, { yPercent: 0 });
+    }
+}
+
+function sortableSnap(y) {
+    var h = this.target.currentHeight;
+    return Math.round(y / h) * h;
+}
+
+function sortableDragEnd() {
+    var t = this.target,
+        max = t.kids.length - 1,
+        newIndex = Math.round(this.y / t.currentHeight);
+    newIndex += (newIndex < 0 ? -1 : 0) + t.currentIndex;
+    if (newIndex === max) {
+        t.parentNode.appendChild(t);
+    } else {
+        t.parentNode.insertBefore(t, t.kids[newIndex+1]);
+    }
+    TweenLite.set(t.kids, { yPercent: 0, overwrite: "all" });
+    TweenLite.set(t, { y: 0, color: "" });
+}
