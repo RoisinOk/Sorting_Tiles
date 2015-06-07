@@ -5,6 +5,8 @@
 //this selects the list div which contains the tiles
 var $list = $("#list1");
 //var $container =$("#container")
+var $list2 = $("#list2");
+var $list3 = $("#list3");
 
 
 //The shadows refer to the values of the box shadow on the tiles
@@ -14,6 +16,7 @@ var shadow1 = "0 1px 3px  0 rgba(0, 0, 0, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.6)";
 var shadow2 = "0 6px 10px 0 rgba(0, 0, 0, 0.3), 0 2px 2px 0 rgba(0, 0, 0, 0.2)";
 //The Label is the number of the tile as it is created. It increased with each tile.
 var label = 1;
+var sortableLabel = 1;
 //The z-index property specifies the stack order of an element. Bigger numbers are closer.
 var zIndex = 1000;
 
@@ -21,7 +24,7 @@ var zIndex = 1000;
 
 var tiles  = $list[0].getElementsByClassName("tile");//the list of tiles
 
-createSortable("#list2");
+createSortable("#list3");
 
 
 //=====================================================================================
@@ -44,7 +47,7 @@ function addTile(){
         //Functions are called for when the tile is pressed, for when it is released
         onPress     : onPress,
         onRelease   : onRelease,
-        zIndexBoost : false,
+        zIndexBoost : false
     });//end of create draggable
 
     // NOTE: Leave rowspan set to 1 because this demo doesn't calculate different row heights
@@ -130,7 +133,7 @@ function sortablePress() {
 }
 
 function sortableDragStart() {
-    TweenLite.set(this.target, { color: "#88CE02" });
+    TweenMax.set(this.target, { color: "#88CE02" });
 }
 
 function sortableDrag() {
@@ -140,14 +143,14 @@ function sortableDrag() {
         bound1 = t.currentIndex,
         bound2 = bound1 + indexChange;
     if (bound1 < bound2) { // moved down
-        TweenLite.to(elements.splice(bound1+1, bound2-bound1), 0.15, { yPercent: -100 });
-        TweenLite.to(elements, 0.15, { yPercent: 0 });
+        TweenMax.to(elements.splice(bound1+1, bound2-bound1), 0.15, { yPercent: -100 });
+        TweenMax.to(elements, 0.15, { yPercent: 0 });
     } else if (bound1 === bound2) {
         elements.splice(bound1, 1);
-        TweenLite.to(elements, 0.15, { yPercent: 0 });
+        TweenMax.to(elements, 0.15, { yPercent: 0 });
     } else { // moved up
-        TweenLite.to(elements.splice(bound2, bound1-bound2), 0.15, { yPercent: 100 });
-        TweenLite.to(elements, 0.15, { yPercent: 0 });
+        TweenMax.to(elements.splice(bound2, bound1-bound2), 0.15, { yPercent: 100 });
+        TweenMax.to(elements, 0.15, { yPercent: 0 });
     }
 }
 
@@ -166,6 +169,52 @@ function sortableDragEnd() {
     } else {
         t.parentNode.insertBefore(t, t.kids[newIndex+1]);
     }
-    TweenLite.set(t.kids, { yPercent: 0, overwrite: "all" });
-    TweenLite.set(t, { y: 0, color: "" });
+    TweenMax.set(t.kids, { yPercent: 0, overwrite: "all" });
+    TweenMax.set(t, { y: 0, color: "" });
 }
+
+function addSortable() {
+    //alert("pressed");
+
+    //This declares a new div element with a class of tile, and gives it a HTML label of a number.
+    //Then the new element is appended to the list div.
+    var sortableElement = $("<li></li>").addClass("sortableTile").html(sortableLabel++);
+    $list2.append(sortableElement);
+
+    Draggable.create(sortableElement, {
+        type            : "y",
+        bounds          : $list2,
+        //edgeResistance: 1,
+        onPress         : onSortablePress,
+        //onDragStart   : onSortableDragStart,
+        //onDrag        : sortableDrag,
+        //liveSnap      : sortableSnap,
+        //onDragEnd     : sortableDragEnd
+        onRelease     : onSortableRelease
+    });
+
+    function onSortablePress() {
+
+        //This TweenMax gives the dragTile its shadow and change in size
+        //The z-index makes sure that the tile that is pressed is on top of the other tiles
+        TweenMax.to(sortableElement, 0.2, {
+            autoAlpha : 0.75,
+            boxShadow : shadow2,
+            scale     : 0.95,
+            zIndex    : "+=1000"
+        });
+    }//end of onPress Function
+
+    function onSortableRelease() {
+        //This TweenMax restores the tile to it's usual size and normal shadow
+        TweenMax.to(sortableElement, 0.2, {
+            autoAlpha : 1,
+            boxShadow : shadow1,
+            scale     : 1,
+            zIndex    : ++zIndex
+        });
+
+    }//end of onRelease Function
+
+
+}//end of add sortable function

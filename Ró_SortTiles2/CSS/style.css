@@ -10,7 +10,6 @@ body {
 h3 {
     color: #efefef;
     font-weight: normal;
-    font-weight: 300;
     margin-bottom: 30px;
 }
 h3 a {
@@ -53,6 +52,20 @@ h3 a:hover {
     line-height: 80px;
 }
 
+.sortableTile {
+    color: #efefef;
+    font-weight: normal;
+    font-weight: 300;
+    font-size: large;
+    display: block;
+    position: relative;
+    background-color: #2aabd2;
+    width:200px;
+    height:80px;
+    margin-bottom: 7px;
+    text-align: center;
+    line-height: 80px;
+}
 
 .layout {
     color: #efefef;
