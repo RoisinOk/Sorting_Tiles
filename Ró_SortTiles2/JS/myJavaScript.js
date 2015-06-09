@@ -24,7 +24,7 @@ var zIndex = 1000;
 
 var tiles  = $list[0].getElementsByClassName("tile");//the list of tiles
 
-createSortable("#list3");
+//createSortable("#list3");
 
 
 //=====================================================================================
@@ -173,6 +173,10 @@ function sortableDragEnd() {
     TweenMax.set(t, { y: 0, color: "" });
 }
 
+//=====================================================================================
+//ADD A SORTABLE TILE (CALLED BY ADD A SORTABLE TILE BUTTON)
+//=====================================================================================
+
 function addSortable() {
     //alert("pressed");
 
@@ -184,17 +188,28 @@ function addSortable() {
     Draggable.create(sortableElement, {
         type            : "y",
         bounds          : $list2,
-        //edgeResistance: 1,
+        edgeResistance  : 1,
         onPress         : onSortablePress,
-        //onDragStart   : onSortableDragStart,
-        //onDrag        : sortableDrag,
-        //liveSnap      : sortableSnap,
-        //onDragEnd     : sortableDragEnd
-        onRelease     : onSortableRelease
+        onDragStart     : onSortableDragStart,
+        onDrag          : sortableDrag,
+        liveSnap        : sortableSnap,
+        onDragEnd       : sortableDragEnd,
     });
 
     function onSortablePress() {
+        var t = this.target,
+            i = 0,
+            child = t;
+        while(child = child.previousSibling)
+            if (child.nodeType === 1) i++;
+        t.currentIndex = i;
+        //The offsetHeight property returns viewable height of an element,
+        // including padding, border and scrollbar, but not the margin.
+        t.currentHeight = t.offsetHeight;
+        t.kids = [].slice.call(t.parentNode.children); // convert to array
+    }//end of onSortablePress Function
 
+    function onSortableDragStart(){
         //This TweenMax gives the dragTile its shadow and change in size
         //The z-index makes sure that the tile that is pressed is on top of the other tiles
         TweenMax.to(sortableElement, 0.2, {
@@ -203,18 +218,47 @@ function addSortable() {
             scale     : 0.95,
             zIndex    : "+=1000"
         });
-    }//end of onPress Function
+    }// end of function sortableDragStart
 
-    function onSortableRelease() {
-        //This TweenMax restores the tile to it's usual size and normal shadow
+    function sortableDragEnd() {
+        var t = this.target,
+            max = t.kids.length - 1,
+            newIndex = Math.round(this.y / t.currentHeight);
+        newIndex += (newIndex < 0 ? -1 : 0) + t.currentIndex;
+        if (newIndex === max) {
+            t.parentNode.appendChild(t);
+        } else {
+            t.parentNode.insertBefore(t, t.kids[newIndex+1]);
+        }//end of if/else
         TweenMax.to(sortableElement, 0.2, {
             autoAlpha : 1,
             boxShadow : shadow1,
             scale     : 1,
             zIndex    : ++zIndex
         });
+    }
 
-    }//end of onRelease Function
+    function sortableDrag() {
+        var t = this.target,
+            elements = t.kids.slice(), // clone
+            indexChange = Math.round(this.y / t.currentHeight),
+            bound1 = t.currentIndex,
+            bound2 = bound1 + indexChange;
+        if (bound1 < bound2) { // moved down
+            TweenMax.to(elements.splice(bound1+1, bound2-bound1), 0.15, { yPercent: -100 });
+            TweenMax.to(elements, 0.15, { yPercent: 0 });
+        } else if (bound1 === bound2) {
+            elements.splice(bound1, 1);
+            TweenMax.to(elements, 0.15, { yPercent: 0 });
+        } else { // moved up
+            TweenMax.to(elements.splice(bound2, bound1-bound2), 0.15, { yPercent: 100 });
+            TweenMax.to(elements, 0.15, { yPercent: 0 });
+        }
+    }//end sortableDrag function
 
+    function sortableSnap(y) {
+        var h = this.target.currentHeight;
+        return Math.round(y / h) * h;
+    }//end sortableSnap function
 
 }//end of add sortable function
